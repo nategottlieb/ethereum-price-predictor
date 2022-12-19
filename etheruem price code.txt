@@ -1,0 +1,31 @@
+import tensorflow as tf
+from tensorflow import keras
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.layers import Dense
+
+df = pd.read_csv(r"C:\Users\Nate\Documents\ethereumprice.csv")
+X = df['open']
+y = df['timestamp']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.2)
+
+model= Sequential()
+model.add(Dense(units=1, activation='relu'))
+model.compile(loss='mean_squared_error', optimizer='adam', metrics= ['accuracy'])
+history = model.fit(X_train, y_train, epochs=11, batch_size=32)
+y_hat = model.predict(X)
+
+fig = plt.figure()
+ax1 = fig.add_subplot(111)
+ax1.set_xlabel('Aug 2015-Oct 2022')
+ax1.set_ylabel('US $')
+ax1.set_xticklabels([])
+line1, = ax1.plot(y_hat, color = 'green') 
+line2, = ax1.plot(X, color ='blue')
+plt.legend(['Predicted Price', 'Ethereum Price'], loc='upper left')
+plt.title('Predicted vs Actual Price') 
+plt.show()
+
+
